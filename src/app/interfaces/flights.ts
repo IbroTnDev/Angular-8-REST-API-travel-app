@@ -4,7 +4,6 @@ export interface Flights {
     departureDate: string;
     returnDate: string;
     tripType: string;
-    airline: string;
     cabin: string;
     adults: string;
     children: string;

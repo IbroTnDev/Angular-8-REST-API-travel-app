@@ -1,0 +1,95 @@
+<div class="container">
+    <ul class="breadcrumb">
+        <li>
+            <a href="#">Home</a>
+        </li>
+        <li class="active">
+            Flight Search Result
+        </li>
+    </ul>
+    <h3 class="booking-title">{{flights.length}} Flights from {{flightHeader.departureAirport}} to
+        {{flightHeader.destinationAirport}} on {{formateDateMS(flightHeader.depatureDate)}}
+    </h3>
+    <div style="float: right;margin-bottom: 30px" >
+        <div class="nav-drop booking-sort">
+            <h5 class="booking-sort-title">
+                Sort flights by:
+                <select class="nav-drop-menu" (change)="sort()" class="form-control" name="sortValue" id="sortValue"
+                    [(ngModel)]="sortValue">
+                    <option value="Lowest Price">Price(low to high)</option>
+                    <option value="Highest Price">Price(high to low)</option>
+                    <option value="Earliest Departure">Earliest Departure</option>
+                    <option value="Latest Departure">Latest Departure</option>
+                </select>
+            </h5>
+        </div>
+    </div>
+
+</div>
+<div class="container">
+        <ul class="booking-list">
+                <li *ngFor="let flight of flights">
+                    <div class="booking-item-container">
+                        <div class="booking-item">
+                            <div class="row">
+                                <div class="col-md-2">
+                                    <div class="booking-item-airline-logo">
+                                        <img src="https://images.kiwi.com/airlines/64x64/{{flight.airlines}}.png"
+                                            alt="Image Alternative text" title="Image Title">
+                                            <div style="margin-top: 5px" [ngSwitch]="flight.airlines">
+                                                <p *ngSwitchDefault></p>
+                                                <p *ngSwitchCase="'AY'">Finnair</p>
+                                                <p *ngSwitchCase="'D8'">Norwegian Air</p>
+                                                <p *ngSwitchCase="'BT'">Air Baltic</p>
+                                                <p *ngSwitchCase="'BA'">British Airways</p>
+                                                <p *ngSwitchCase="'SQ'">Singapore Airlines</p>
+                                                <p *ngSwitchCase="'SK'">Scandinavian Airlines</p>
+                                                <p *ngSwitchCase="'U2'">Easy Jet</p>
+                                                <p *ngSwitchCase="'LH'">Lufthansa</p>
+                                            </div>
+                                            
+                                    </div>
+                                </div>
+                                <div class="col-md-5">
+                                    <div class="booking-item-flight-details">
+                                        <div class="booking-item-departure">
+                                            <i class="fa fa-plane"></i>
+                                            <h5>{{formatTime3(flight.dTime)}}</h5>
+                                            <p class="booking-item-date">
+                                                {{formatDate2(flight.dTime)}}</p>
+                                            <p class="booking-item-destination">
+                                                {{flightHeader.departureAirport}}</p>
+                                        </div>
+                                        <div class="booking-item-arrival">
+                                            <i class="fa fa-plane fa-flip-vertical"></i>
+                                            <h5>{{formatTime3(flight.aTime)}}</h5>
+                                            <p class="booking-item-date">
+                                                    {{formatDate2(flight.aTime)}}</p>
+                                            <p class="booking-item-destination">
+                                                {{flightHeader.destinationAirport}}
+                                            </p>
+                                        </div>
+
+                                    </div>
+                                </div>
+                                <div class="col-md-1">
+                                        <h5>{{flight.fly_duration}} </h5>
+                                </div>
+    
+                                <div class="col-md-3 text-right">
+                                    <span
+                                        class="booking-item-price">{{flight.price}} €</span>
+    
+                                    <p class="booking-item-flight-class">
+                                        {{flightHeader.tripType}}
+                                        <span class="booking-item-people">/person</span>
+                                    </p>
+                                    <a class="btn btn-primary">View Deal</a>
+                                </div>
+                         
+                            </div>
+                        </div>
+                    </div>
+                </li>
+            </ul>
+</div>

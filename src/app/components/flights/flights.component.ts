@@ -1,8 +1,7 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
-import { Flight } from '../../model/Flight';
+import { Component, TemplateRef } from '@angular/core';
 import { FlightService } from '../../services/flight.service';
 import * as moment from 'moment';
-import { TypeaheadMatch, ModalDirective } from 'ngx-bootstrap';
+import { TypeaheadMatch, ModalDirective, BsModalService, BsModalRef } from 'ngx-bootstrap';
 import { Router } from '@angular/router';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { NgForm } from '@angular/forms';
@@ -17,25 +16,15 @@ import { Flights } from 'src/app/interfaces/flights';
 })
 export class FlightsComponent {
 
-constructor(private flightService: FlightService, private router: Router, private spinner: NgxSpinnerService) {}
-
-/* public myLocalList = [
-  "Helsinki (HEL)",
-  "Helena Regional (HLN)",
-  "Svolvær Airport, Helle (SVJ)",
-  "Monaco Heliport (MCM)",
-  "Saint Helena (HLE)",
-  "Algeciras Heliport (AEI)",
-  "Hayman Island Heliport (HIS)",
-  "Heathrow (LHR)",
-  "Henri Coandă International (OTP)"
-]; */
+constructor(private flightService: FlightService, private router: Router, private spinner: NgxSpinnerService,
+            private bsmodalservice: BsModalService) {}
+    modalRef: BsModalRef;
     originCity: string;
     destinationCity: string;
     departureDate: string;
     returnDate: string;
     tripType = 'oneway';
-    airline = 'AY';
+    airline: string;
     seatClass = 'M';
     noOfAdults = 1;
     noOfChildren = 0;
@@ -63,13 +52,25 @@ constructor(private flightService: FlightService, private router: Router, privat
   }
 
   onSubmit = function() {
+    const flightHeader = {
+      departureAirport: this.departureAirport.name,
+      destinationAirport: this.destinationAirport.name,
+      depatureDate: this.formatDate(this.departureDate),
+      arrivalDate: this.formatDate(this.returnDate),
+      tripType: this.tripType,
+      ticketClass: this.seatClass
+      };
+    localStorage.setItem('flightHeader', JSON.stringify(flightHeader));
+    this.spinner.show();
     this.flightService.getFlights(this.departureAirport.code, this.destinationAirport.code,
       this.formatDate(this.departureDate), this.formatDate(this.returnDate), this.tripType, this.airline,
       this.seatClass, this.noOfAdults, this.noOfChildren, this.noOfInfants)
       .subscribe((searchedFlights) => {
-        this.flights = searchedFlights.data;
+        this.flights = searchedFlights;
+        localStorage.setItem('flight', JSON.stringify(searchedFlights.data));
         console.log(this.flights);
-        //this.router.navigate(['/flight_search_result']);
+        this.spinner.hide();
+        this.router.navigate(['/flight_search_result']);
       }, (error) => {
           console.log(error);
       });
@@ -85,8 +86,6 @@ getAirports(token: string) {
     const airports = [];
     this.flightService.retrieveAirports(token).subscribe(
       response => {
-      /* console.log(response);
-      this.locationData = response.locations; */
       const data = Object.values(response)[0];
       for (const u of data) {
         const airport = u;
@@ -103,8 +102,8 @@ getAirports(token: string) {
 }
 
 formatDate(date: string): string {
-  const msec = Date.parse(date);
-  const d = moment(msec).format('DD/MM/YYYY');
+  const d = moment(date).format('DD/MM/YYYY');
+  console.log(d);
   return d;
 }
 
