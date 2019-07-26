@@ -21,11 +21,10 @@ constructor(private flightService: FlightService, private router: Router, privat
     this.flightHeader = JSON.parse(localStorage.getItem('flightHeader'));
    }
 
-  formateDateMS(checkinDate) {
-    const msec = Date.parse(checkinDate);
-    const d = moment(msec).format('MMM DD, YYYY');
+  formateDateMS(date) {
+    const d = moment(date, 'DD/MM/YYYY').format('MMM DD, YYYY');
     if (d === 'Invalid date') {
-        return checkinDate;
+        return date;
     }
     return d;
   }
